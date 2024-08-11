@@ -1,0 +1,91 @@
+/* Estilo para o modal */
+.modal {
+    display: none; /* Oculta o modal por padrão */
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+    position: relative;
+}
+
+.close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-buttons {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.modal-buttons button {
+    margin: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+/* CSS para ajustar os cabeçalhos do modal */
+
+.modal-header {
+    background-color: #f0f0f0; /* Fundo cinza */
+    padding: 10px; /* Adicionar algum preenchimento para melhor visualização */
+}
+
+.modal-header table th {
+    text-align: left; /* Justificar texto à esquerda */
+    vertical-align: middle; /* Alinhar verticalmente ao centro */
+    padding: 10px; /* Adicionar algum preenchimento para melhor visualização */
+}
+.modal-content table th {
+    text-align: left; /* Justificar texto à esquerda */
+    vertical-align: middle; /* Alinhar verticalmente ao centro */
+    padding: 10px; /* Adicionar algum preenchimento para melhor visualização */
+    background-color: #f0f0f0; /* Fundo cinza */
+}
+
+.modal-content table td {
+    text-align: left; /* Justificar texto à esquerda */
+    padding: 10px; /* Adicionar algum preenchimento para melhor visualização */
+}
+
+.modal-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Alinhar conteúdo verticalmente ao centro */
+    align-items: center; /* Alinhar conteúdo horizontalmente ao centro */
+}
+
+.modal-content table {
+    width: 100%; /* Garantir que a tabela ocupe toda a largura disponível */
+}
+/* Aplicar fundo cinza ao cabeçalho da tabela */
+.modal-content table thead {
+    background-color: #f0f0f0;
+}
+
+/* Remover o "X" de fechar janela */
+.close {
+    display: none;
+}
