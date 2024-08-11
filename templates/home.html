@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha Página Responsiva</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/modal.css') }}">
+</head>
+
+<body>
+    <header class="header">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='imagens/logo_vertical.png') }}" alt="Logo" class="logo">
+        </div>
+        <!--
+        <div class="contact-info">
+                <p>Contato: vertesaude@vertesaude.com.br | Telefone: (51) 3284-1590</p>
+        </div>
+        -->
+    </header>
+    <div class="horizontal-line"></div>
+    <div id="blueDiv">
+        <div id="headerDiv">
+            <br>
+            <br>
+            <h1>Ajuste de Matrícula</h1>
+        </div>
+
+        <div id='conteudoDiv'>
+            <h3>Código de pessoa física do beneficiário</h3>
+            <form method="POST" action="/" id="formConsultar">
+                <br>
+                <br>
+                <input type="text" id="codigoInput" placeholder="Insira o código..." name="codigoInput">
+                <br>
+                <br>
+                <div class="container">
+                    <button type="submit" class="rounded-button">Ok</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para exibir os resultados da consulta -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="modal-content">
+                <!-- Aqui serão exibidos os resultados da consulta -->
+                <table id="resultTable">
+                    <thead>
+                        <tr>
+                            <th>Código pessoa física</th>
+                            <th>Beneficiário</th>
+                            <th>Matrícula atual</th>
+                            <th>Matrícula ajustada</th>
+                        </tr>
+                    </thead>
+                    <tbody id="modal-body">
+                        <!-- Linhas de resultados serão inseridas aqui -->
+                    </tbody>
+                </table>
+                <p id="noResultsMessage" style="display: none;">Nenhum resultado encontrado para o código de pessoa física informado.</p>
+            </div>
+            <div class="modal-buttons">
+                <button id="btnOk">Confirmar</button>
+                <button id="btnCancelar">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Formulário oculto para executar atualizações -->
+    <form method="POST" action="/executar_updates" id="formExecutarUpdates" style="display: none;">
+        <input type="hidden" name="cd_pessoa_fisica" id="cd_pessoa_fisica_hidden">
+    </form>
+
+    <script>
+        var modal = document.getElementById("myModal");
+        var btnOk = document.getElementById("btnOk");
+        var btnCancelar = document.getElementById("btnCancelar");
+
+        function abrirModal() {
+            var resultados = {{ resultados | tojson | safe }};
+            var modalBody = document.getElementById("modal-body");
+            var noResultsMessage = document.getElementById("noResultsMessage");
+
+            if (resultados.length > 0) {
+                modalBody.innerHTML = ""; 
+
+                resultados.forEach(function(resultado) {
+                    var row = document.createElement("tr");
+
+                    // Alterando a ordem dos campos e os nomes das colunas
+                    var camposOrdenados = [
+                        resultado[1], // Código pessoa física
+                        resultado[2], // Beneficiário
+                        resultado[0], // Matrícula atual
+                        resultado[3]  // Matrícula ajustada
+                    ];
+
+                    camposOrdenados.forEach(function(value) {
+                        var cell = document.createElement("td");
+                        cell.textContent = value;
+                        row.appendChild(cell);
+                    });
+
+                    modalBody.appendChild(row);
+                });
+
+                noResultsMessage.style.display = "none";
+            } else {
+                noResultsMessage.style.display = "block";
+            }
+
+            modal.style.display = "block";
+        }
+
+        var span = document.getElementsByClassName("close")[0];
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        btnOk.onclick = async function() {
+    var cdPessoaFisica = "{{ cd_pessoa_fisica }}";
+    document.getElementById("cd_pessoa_fisica_hidden").value = cdPessoaFisica;
+
+    // Criação de um FormData para enviar o formulário via fetch
+    var formData = new FormData(document.getElementById("formExecutarUpdates"));
+
+    try {
+        let response = await fetch("/executar_updates", {
+            method: "POST",
+            body: formData
+        });
+
+        if (response.ok) {
+            // Remove o modal atual
+            modal.style.display = "none";
+
+            // Exibir mensagem de sucesso com botão "Ok"
+            var successModal = document.createElement("div");
+            successModal.style.position = "fixed";
+            successModal.style.top = "50%";
+            successModal.style.left = "50%";
+            successModal.style.transform = "translate(-50%, -50%)";
+            successModal.style.backgroundColor = "#fff";
+            successModal.style.padding = "20px";
+            successModal.style.boxShadow = "0px 0px 10px rgba(0, 0, 0, 0.1)";
+            successModal.style.zIndex = "1000";
+            successModal.style.textAlign = "center"; // Centralizar o texto e o botão
+
+            var successMessage = document.createElement("p");
+            successMessage.textContent = "Registro atualizado com sucesso. Verifique no Tasy a informação";
+            successModal.appendChild(successMessage);
+
+            var okButton = document.createElement("button");
+            okButton.textContent = "Ok";
+            okButton.style.marginTop = "10px";
+            okButton.style.display = "inline-block"; // Garantir que o botão se comporte como bloco para alinhamento
+            okButton.onclick = function() {
+                window.location.href = "/";
+            };
+            successModal.appendChild(okButton);
+
+            document.body.appendChild(successModal);
+        } else {
+            alert("Ocorreu um erro ao atualizar o registro. Tente novamente.");
+        }
+    } catch (error) {
+        alert("Erro ao conectar-se ao servidor. Tente novamente mais tarde.");
+    }
+}
+
+
+
+        btnCancelar.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        // Abre o modal se houver resultados
+        {% if resultados %}
+            abrirModal();
+        {% endif %}
+    </script>
+</body>
+
+</html>
