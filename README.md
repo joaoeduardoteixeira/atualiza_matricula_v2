@@ -25,7 +25,7 @@ João Eduardo da Silva Teixeira
 
 Versão 2 da solução. 
 
-Melhorias: Registros apresentados em tela para confirmação da ação. Suprimida página de sucesso e apresentado um popup de "ok". 
+Melhorias: Registros apresentados em tela para confirmação da ação. Suprimida página de sucesso e apresentado um popup de "ok". <br>
 Layout: Fundo do cabeçalho retirado, linha preta como footer do cabeçalho e logo aumentado.
 
 ## Contato:
